@@ -16,7 +16,7 @@ public:
     double d;
     vector<Particle> particles;
 
-    PenningTrap(double B0_in, double V0_in, double d_in) // Constructor
+    PenningTrap(double B0_in, double V0_in, double d_in,mat R, mat V, vec q_vec, vec m_vec) // Constructor
     {
         B0 = B0_in;
         V0 = V0_in;
@@ -38,14 +38,15 @@ public:
     // External magnetic field at point r=(x,y,z)
     vec external_B_field(vec r)
     {
-        vec magneticfield(3);
-        return magneticfield ;
+        vec B(3).fill(0);
+        B(2) = B0;
+        return B ;
     }
 
     // Force on particle_i from particle_j
     vec force_particle(int i, int j)
     {
-        vec force(2);
+        vec force(3).fill(0);
 
         return force;
     }
