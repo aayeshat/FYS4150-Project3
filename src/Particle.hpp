@@ -9,24 +9,24 @@ using namespace std;
 class Particle
 {
 public:
-    double charge;
-    double mass;
-    vec position;
-    vec velocity;
+    double q; //charge
+    double m; //mass
+    vec r; //position
+    vec v; //velocity
 
-    Particle(double charge_in, double mass_in, vec position_in, vec velocity_in) //constructor
+    Particle(double q_in, double m_in, vec r_in, vec v_in) //constructor
     {
-        charge = charge_in;
-        mass = mass_in;
-        position = position_in;
-        velocity = velocity_in;
+        q = q_in;
+        m = m_in;
+        r = r_in;
+        v = v_in;
     }
 
     void print_particle() // funtion
     {
-        cout << "charge = " << charge << endl;
-        cout << "mass = " << mass << endl;
-        position.print("position = ");
-        velocity.print("velocity = ");
+        cout << "charge = " << q << endl;
+        cout << "mass = " << m << endl;
+        r.print("position = ");
+        v.print("velocity = ");
     }
 };

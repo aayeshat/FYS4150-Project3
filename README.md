@@ -2,7 +2,7 @@
 
 ### problem_6
 
-`g++ src/problem_6.cpp  -larmadillo && ./a.out`
+`g++ src/particle_test.cpp  -larmadillo && ./a.out`
 
 #### problem_7
-`g++ src/problem_7.cpp -larmadillo && ./a.out`
+`g++ src/penningtrap_test.cpp -larmadillo && ./a.out`
