@@ -13,7 +13,7 @@ int main()
 
     p.print_particle();
 
-    cout << "charge inside class = " << p.charge << endl;
+    cout << "charge inside class = " << p.q << endl;
 
     return 0;
 }
