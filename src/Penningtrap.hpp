@@ -8,7 +8,6 @@ using namespace arma;
 using namespace std;
 
 class PenningTrap
-
 {
 public:
     double B0;
@@ -102,5 +101,120 @@ public:
         vec F = total_force_particles(i) + total_force_external(i);
 
         return F;
+    }
+
+    void evolve_RK4(double dt)
+    {
+        mat R = mat(3, n).fill(0);
+        mat V = mat(3, n).fill(0);
+        for (int i = 0; i < n; i++)
+        {
+            Particle p = particles[i];
+
+            vec p_v = p.v;
+            vec p_r = p.r;
+
+            vec F = total_force(i);
+            vec acceleration = F / p.m;
+
+            // K1
+            vec k1_v = acceleration * dt;
+            vec k1_r = p_v * dt;
+
+            vec last_p_v = p_v;
+            vec last_p_r = p_r;
+
+            p_v = p_v + k1_v / 2;
+            p_r = p_r + k1_r / 2;
+
+            // K2
+
+            vec k2_v = last_p_v + k1_v / 2;
+            vec k2_r = last_p_r + k1_r / 2;
+
+            last_p_v = p_v;
+            last_p_r = p_r;
+
+            p_v = p_v + k2_v / 2;
+            p_r = p_r + k2_r / 2;
+
+            // K3
+
+            vec k3_v = last_p_v + k2_v / 2;
+            vec k3_r = last_p_r + k2_r / 2;
+
+            last_p_v = p_v;
+            last_p_r = p_r;
+
+            p_v = p_v + k3_v / 2;
+            p_r = p_r + k3_r / 2;
+
+            // K4
+
+            vec k4_v = last_p_v + k3_v / 2;
+            vec k4_r = last_p_r + k3_r / 2;
+
+            last_p_v = p_v;
+            last_p_r = p_r;
+
+            p_v = p_v + k4_v / 2;
+            p_r = p_r + k4_r / 2;
+
+            V.col(i) = p_v + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
+            R.col(i) = p_r + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
+        }
+
+        V.print("evolve_RK4 V= ");
+        R.print("evolve_RK4 R= ");
+
+        printAndSaveToFile(V, R, "./out/evolve_RK4.txt");
+    }
+
+    void evolve_forward_Euler(double dt)
+    {
+        mat R = mat(3, n).fill(0);
+        mat V = mat(3, n).fill(0);
+
+        for (int i = 0; i < n; i++)
+        {
+            Particle p = particles[i];
+            vec F = total_force(i);
+
+            vec a = F / p.m;
+
+            V.col(i) = p.v + a * dt;
+            R.col(i) = p.r + p.v * dt;
+        }
+
+        V.print("evolve_forward_Euler V= ");
+        R.print("evolve_forward_Euler R= ");
+
+        printAndSaveToFile(V, R, "./out/evolve_forward_Euler.txt");
+    }
+
+    void printAndSaveToFile(mat V, mat R, string filename)
+    {
+        int width = 12;
+        int prec = 4;
+
+        ofstream ofile;
+        ofile.open(filename);
+
+        cout << setw(width) << setprecision(prec) << scientific << "R"
+             << setw(width) << setprecision(prec) << scientific << "V"
+             << endl;
+
+        for (int i = 0; i < V.size(); i++)
+        {
+
+            cout << setw(width) << setprecision(prec) << scientific << R(i)
+                 << setw(width) << setprecision(prec) << scientific << V(i)
+                 << endl;
+
+            ofile << setw(width) << setprecision(prec) << scientific << R(i)
+                  << setw(width) << setprecision(prec) << scientific << V(i)
+                  << endl;
+        }
+        ofile.close();
     }
 };

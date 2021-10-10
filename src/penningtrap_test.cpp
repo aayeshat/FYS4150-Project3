@@ -36,5 +36,19 @@ int main()
     vec force = pt.force_particle(0, 1);
     force.print("force");
 
+    cout << endl
+         << endl
+         << "evolve_RK4 "
+         << endl
+         << endl;
+    pt.evolve_RK4(.1);
+
+    cout << endl
+         << endl
+         << "evolve_forward_Euler "
+         << endl
+         << endl;
+    pt.evolve_forward_Euler(.1);
+
     return 0;
 }
