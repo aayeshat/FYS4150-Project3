@@ -8,7 +8,6 @@ using namespace arma;
 using namespace std;
 
 class PenningTrap
-
 {
 public:
     double B0;
@@ -102,5 +101,52 @@ public:
         vec F = total_force_particles(i) + total_force_external(i);
 
         return F;
+    }
+
+    void evolve_RK4(double dt)
+    {
+    }
+
+    void evolve_forward_Euler(double dt)
+    {
+        mat R = mat(3, n).fill(0);
+        mat V = mat(3, n).fill(0);
+
+        for (int i = 0; i < n; i++)
+        {
+            Particle p = particles[i];
+            vec F = total_force(i);
+
+            vec a = F / p.m;
+
+            V.col(i) = p.v + a * dt;
+            R.col(i) = p.r + p.v * dt;
+        }
+
+        V.print("V= ");
+        R.print("R= ");
+
+        int width = 12;
+        int prec = 4;
+        string filename = "./out/evolve_forward_Euler.txt";
+        ofstream ofile;
+        ofile.open(filename);
+
+        cout << setw(width) << setprecision(prec) << scientific << "R"
+             << setw(width) << setprecision(prec) << scientific << "V"
+             << endl;
+
+        for (int i = 0; i < V.size(); i++)
+        {
+
+            cout << setw(width) << setprecision(prec) << scientific << R(i)
+                 << setw(width) << setprecision(prec) << scientific << V(i)
+                 << endl;
+
+            ofile << setw(width) << setprecision(prec) << scientific << R(i)
+                  << setw(width) << setprecision(prec) << scientific << V(i)
+                  << endl;
+        }
+        ofile.close();
     }
 };

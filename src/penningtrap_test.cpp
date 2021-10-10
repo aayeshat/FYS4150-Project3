@@ -36,5 +36,8 @@ int main()
     vec force = pt.force_particle(0, 1);
     force.print("force");
 
+    cout << "evolve_forward_Euler " << endl;
+    pt.evolve_forward_Euler(.1);
+
     return 0;
 }
