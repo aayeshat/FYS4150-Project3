@@ -111,57 +111,48 @@ public:
         {
             Particle p = particles[i];
 
-            vec p_v = p.v;
-            vec p_r = p.r;
-
             vec F = total_force(i);
             vec acceleration = F / p.m;
 
-            // K1
+            vec velocity = p.v; // particle initial velocity
+            vec k0_velocity = velocity;
+
+            vec position = p.r; // particle initial position
+            vec k0_position = position;
+
+            // K1 velocity and position
             vec k1_v = acceleration * dt;
-            vec k1_r = p_v * dt;
+            velocity = velocity + k1_v / 2;
+            vec k1_velocity = velocity;
 
-            vec last_p_v = p_v;
-            vec last_p_r = p_r;
-
-            p_v = p_v + k1_v / 2;
-            p_r = p_r + k1_r / 2;
+            vec k1_r = velocity * dt;
+            position = position + k1_r / 2;
+            vec k1_position = position;
 
             // K2
+            vec k2_v = k0_velocity + k1_v / 2;
+            velocity = velocity + k2_v / 2;
+            vec k2_velocity = velocity;
 
-            vec k2_v = last_p_v + k1_v / 2;
-            vec k2_r = last_p_r + k1_r / 2;
+            vec k2_r = k0_position + k1_r / 2;
+            position = position + k2_r / 2;
+            vec k2_position = position;
 
-            last_p_v = p_v;
-            last_p_r = p_r;
+            // K3 
+            vec k3_v = k1_velocity + k2_v / 2;
+            velocity = velocity + k3_v / 2;
+            vec k3_r = k1_position + k2_r / 2;
+            position = position + k3_r / 2;
 
-            p_v = p_v + k2_v / 2;
-            p_r = p_r + k2_r / 2;
+            // K4 
+            vec k4_v = k2_velocity + k3_v / 2;
+            velocity = velocity + k4_v / 2;
+            vec k4_r = k2_position + k3_r / 2;
+            position = position + k4_r / 2;
 
-            // K3
 
-            vec k3_v = last_p_v + k2_v / 2;
-            vec k3_r = last_p_r + k2_r / 2;
-
-            last_p_v = p_v;
-            last_p_r = p_r;
-
-            p_v = p_v + k3_v / 2;
-            p_r = p_r + k3_r / 2;
-
-            // K4
-
-            vec k4_v = last_p_v + k3_v / 2;
-            vec k4_r = last_p_r + k3_r / 2;
-
-            last_p_v = p_v;
-            last_p_r = p_r;
-
-            p_v = p_v + k4_v / 2;
-            p_r = p_r + k4_r / 2;
-
-            V.col(i) = p_v + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
-            R.col(i) = p_r + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
+            V.col(i) = velocity + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
+            R.col(i) = position + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
         }
 
         V.print("evolve_RK4 V= ");
