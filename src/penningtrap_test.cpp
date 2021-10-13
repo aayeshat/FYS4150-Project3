@@ -15,6 +15,10 @@ int main()
     double d = 10e4;
     int n = 2;
 
+    int t = 100;
+    int N = 1000;
+    double dt = t*(1./N);
+
     PenningTrap pt(B0, V0, d, n);
 
     Particle particle1(1., 40.078, vec(3, fill::randu), vec(3, fill::randu)); //TODO random position and velocity for now

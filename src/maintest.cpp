@@ -16,6 +16,7 @@ public:
     int n;
     double ke = 1.38935333e5;
     vector<Particle> particles;
+    double t0 = 0;
 
     PenningTrap(double B0_in, double V0_in, double d_in, int n_in) // Constructor
     {
@@ -53,18 +54,6 @@ public:
         return magneticfield;
     }
 
-  vec total_force_particles(int i)
-    {
-        vec F = vec(3).fill(0);
-        for (int j = 0; j < n + 1; j++)
-        {
-            if (i != j)
-            {
-                F += force_particle(i, j);
-            }
-        }
-        return F;
-    }
     // Force on particle_i from particle_j
     vec force_particle(int i, int j)
     {
@@ -80,11 +69,42 @@ public:
         return force;
     }
 
+    vec total_force_external(int i)
+    {
+
+        vec F = vec(3).fill(0);
+        vec E = external_E_field(i);
+        vec B = external_B_field(i);
+
+        Particle p = particles[i];
+        vec v = p.v;
+        double q = p.q;
+
+        F = q * E + cross(q * v, B);
+        return F;
+    }
+
+    vec total_force_particles(int i)
+    {
+        vec F = vec(3).fill(0);
+        
+       for (int j = 0; j < n + 1; j++)
+      {
+           if (i != j)
+            {
+                F += force_particle(i, j);
+            }
+            else {
   
+}
+        }
+        return F;
+    }
 
     vec total_force(int i)
     {
-        vec F = total_force_particles(i) + total_force_external(i);
+        //vec F = total_force_particles(i) + total_force_external(i);
+        vec F = total_force_external(i);
 
         return F;
     }
@@ -93,6 +113,7 @@ public:
     {
         mat R = mat(3, n).fill(0);
         mat V = mat(3, n).fill(0);
+
         for (int i = 0; i < n + 1; i++)
         {
             Particle p = particles[i];
@@ -100,39 +121,39 @@ public:
             vec F = total_force(i);
             vec acceleration = F / p.m;
 
-            vec k0_velocity = p.v; // particle initial velocity
-            vec k0_position = p.r; // particle initial position
+            vec v_0 = p.v; // particle initial velocity v0
+            vec r_0 = p.r; // particle initial position
 
             // K1 velocity and position
             vec k1_v = acceleration * dt;
-            vec k1_velocity = k0_velocity + k1_v / 2;
 
-            vec k1_r = k1_velocity * dt;
-            vec k1_position = k0_position + k1_r / 2;
+            vec k1_r = v_0 * dt;
 
             // K2
-            vec k2_v = k0_velocity + k1_v / 2;
-            vec k2_velocity = k1_velocity + k2_v / 2;
+            vec k2_v = dt * (t0 + dt / 2, v_0 + k1_v / 2);
 
-            vec k2_r = k0_position + k1_r / 2;
-            vec k2_position = k1_position + k2_r / 2;
+            vec k2_r = dt * (t0 + dt / 2, r_0 + k1_r / 2);
+
+            double t_1 = t0;
+            vec v_1 = v_0;
+            vec r_1 = r_0;
 
             // K3
-            vec k3_v = k1_velocity + k2_v / 2;
-            vec k3_velocity = k2_velocity + k3_v / 2;
+            vec k3_v = dt * (t_1 + dt / 2, v_1 + k2_v / 2);
 
-            vec k3_r = k1_position + k2_r / 2;
-            vec k3_position =  k1_position + k3_r / 2;;
+            vec k3_r = dt * (t_1 + dt / 2, r_1 + k1_r / 2);
+
+            double t_2 = t_1;
+            vec v_2 = v_1;
+            vec r_2 = r_1;
 
             // K4
-            vec k4_v = k2_velocity + k3_v / 2;
-            vec k4_velocity = k3_velocity + k4_v / 2;
+            vec k4_v = dt * (t_2 + dt / 2, v_2 + k3_v);
 
-            vec k4_r = k2_position + k3_r ;
-            vec k4_position = k3_position + k4_r;
+            vec k4_r = dt * (t_2 + dt / 2, r_2 + k3_r);
 
-            V.col(i) = k4_velocity + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
-            R.col(i) = k4_position + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
+            V.col(i) = v_0 + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
+            R.col(i) = r_0 + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
         }
 
         V.print("evolve_RK4 V= ");
@@ -189,3 +210,51 @@ public:
         ofile.close();
     }
 };
+
+int main()
+{
+
+    double B0 = 9.65e1;
+    double V0 = 9.65e8;
+    double d = 10e4;
+    int n = 1; //number of particles
+
+    int t = 100;
+    int N = 1000;
+    int t0 = 0;
+    int tf = 100;
+    double dt = t * (1. / N);
+    //vec t = linspace(t0, tf, dt);
+
+    PenningTrap pt(B0, V0, d, n);
+
+        Particle particle1(1., 40.078, vec(3, fill::randu), vec(3, fill::randu)); //TODO random position and velocity for now
+    pt.add_particle(particle1);
+
+    Particle particle2(1., 40.078, vec(3, fill::randu), vec(3, fill::randu)); //TODO  random position and velocity for now
+    pt.add_particle(particle2);
+
+    vec electricfield = pt.external_E_field(0);
+    electricfield.print("p1 electricfield");
+    vec magneticfield = pt.external_B_field(0);
+    magneticfield.print("p1 magneticfield");
+
+    vec force = pt.force_particle(0, 1);
+    force.print("force");
+
+    cout << endl
+         << endl
+         << "evolve_RK4 "
+         << endl
+         << endl;
+    pt.evolve_RK4(.1);
+
+    cout << endl
+         << endl
+         << "evolve_forward_Euler "
+         << endl
+         << endl;
+    pt.evolve_forward_Euler(.1);
+
+    return 0;
+}
