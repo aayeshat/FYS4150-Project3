@@ -53,18 +53,6 @@ public:
         return magneticfield;
     }
 
-  vec total_force_particles(int i)
-    {
-        vec F = vec(3).fill(0);
-        for (int j = 0; j < n + 1; j++)
-        {
-            if (i != j)
-            {
-                F += force_particle(i, j);
-            }
-        }
-        return F;
-    }
     // Force on particle_i from particle_j
     vec force_particle(int i, int j)
     {
@@ -80,7 +68,33 @@ public:
         return force;
     }
 
-  
+    vec total_force_external(int i)
+    {
+
+        vec F = vec(3).fill(0);
+        vec E = external_E_field(i);
+        vec B = external_B_field(i);
+
+        Particle p = particles[i];
+        vec v = p.v;
+        double q = p.q;
+
+        F = q * E + cross(q * v, B);
+        return F;
+    }
+
+    vec total_force_particles(int i)
+    {
+        vec F = vec(3).fill(0);
+        for (int j = 0; j < n; j++)
+        {
+            if (i != j)
+            {
+                F += force_particle(i, j);
+            }
+        }
+        return F;
+    }
 
     vec total_force(int i)
     {
@@ -93,46 +107,56 @@ public:
     {
         mat R = mat(3, n).fill(0);
         mat V = mat(3, n).fill(0);
-        for (int i = 0; i < n + 1; i++)
+        for (int i = 0; i < n; i++)
         {
             Particle p = particles[i];
 
             vec F = total_force(i);
             vec acceleration = F / p.m;
 
-            vec k0_velocity = p.v; // particle initial velocity
-            vec k0_position = p.r; // particle initial position
+            vec velocity = p.v; // particle initial velocity
+            vec k0_velocity = velocity;
+
+            vec position = p.r; // particle initial position
+            vec k0_position = position;
 
             // K1 velocity and position
             vec k1_v = acceleration * dt;
-            vec k1_velocity = k0_velocity + k1_v / 2;
+            velocity = k0_velocity + k1_v / 2;
+            vec k1_velocity = velocity;
 
-            vec k1_r = k1_velocity * dt;
-            vec k1_position = k0_position + k1_r / 2;
+            vec k1_r = velocity * dt;
+            position = k0_position + k1_r / 2;
+            vec k1_position = position;
 
             // K2
             vec k2_v = k0_velocity + k1_v / 2;
-            vec k2_velocity = k1_velocity + k2_v / 2;
+            velocity = k1_velocity + k2_v / 2;
+            vec k2_velocity = velocity;
 
             vec k2_r = k0_position + k1_r / 2;
-            vec k2_position = k1_position + k2_r / 2;
+            position = k1_position + k2_r / 2;
+            vec k2_position = position;
 
             // K3
             vec k3_v = k1_velocity + k2_v / 2;
-            vec k3_velocity = k2_velocity + k3_v / 2;
+            velocity = k2_velocity + k3_v / 2;
+            vec k3_velocity = velocity;
 
             vec k3_r = k1_position + k2_r / 2;
-            vec k3_position =  k1_position + k3_r / 2;;
+            position = k1_position + k3_r / 2;
+            vec k3_position = position;
 
             // K4
+
             vec k4_v = k2_velocity + k3_v / 2;
-            vec k4_velocity = k3_velocity + k4_v / 2;
+            velocity = k3_velocity + k4_v / 2;
 
-            vec k4_r = k2_position + k3_r ;
-            vec k4_position = k3_position + k4_r;
+            vec k4_r = k2_position + k3_r / 2;
+            position = k3_position + k4_r / 2;
 
-            V.col(i) = k4_velocity + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
-            R.col(i) = k4_position + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
+            V.col(i) = velocity + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
+            R.col(i) = position + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
         }
 
         V.print("evolve_RK4 V= ");
@@ -146,7 +170,7 @@ public:
         mat R = mat(3, n).fill(0);
         mat V = mat(3, n).fill(0);
 
-        for (int i = 0; i < n + 1; i++)
+        for (int i = 0; i < n; i++)
         {
             Particle p = particles[i];
             vec F = total_force(i);
