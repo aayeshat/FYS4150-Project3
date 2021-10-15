@@ -40,7 +40,7 @@ public:
         P(2) = 2.;
 
         vec r = particles[i].r;
-        vec electricfield = (((-1 * V0) / pow(d, 2)) * P) % r; //TODO d^2 not sure
+        vec electricfield = (((-1 * V0)) * P) % r; //TODO d^2 not sure
 
         return electricfield;
     }
@@ -53,7 +53,7 @@ public:
         return magneticfield;
     }
 
-    // Force on particle_i from particle_j
+    // coulombic interactions Force on particle_i from particle_j
     vec force_particle(int i, int j)
     {
         Particle pi = particles[i];
@@ -68,6 +68,19 @@ public:
         return force;
     }
 
+    vec coulomb_interaction(int i, int j)
+    {
+        if (i != j)
+        {
+            return force_particle(i, j);
+        }
+        else
+        {
+            return vec(3).fill(0);
+        }
+    }
+
+    //total force onparticle i due to external fields
     vec total_force_external(int i)
     {
 
@@ -82,20 +95,19 @@ public:
         F = q * E + cross(q * v, B);
         return F;
     }
-
+    
+    //force on particle i from other particles
     vec total_force_particles(int i)
     {
         vec F = vec(3).fill(0);
         for (int j = 0; j < n; j++)
         {
-            if (i != j)
-            {
-                F += force_particle(i, j);
-            }
+             F += coulomb_interaction(i, j);
         }
         return F;
     }
 
+    //force on particle due to fields and particles
     vec total_force(int i)
     {
         vec F = total_force_particles(i) + total_force_external(i);
@@ -103,10 +115,9 @@ public:
         return F;
     }
 
-    void evolve_RK4(double dt)
+    void evolve_RK4(double dt, mat& R, mat& V)
     {
-        mat R = mat(3, n).fill(0);
-        mat V = mat(3, n).fill(0);
+
         for (int i = 0; i < n; i++)
         {
             Particle p = particles[i];
@@ -137,7 +148,6 @@ public:
 
             vec k3_r = k1_position + k2_r / 2;
             vec k3_position = k1_position + k3_r / 2;
-            ;
 
             // K4
             vec k4_v = k2_velocity + k3_v;
@@ -150,17 +160,10 @@ public:
             R.col(i) = k4_position + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
         }
 
-        V.print("evolve_RK4 V= ");
-        R.print("evolve_RK4 R= ");
-
-        printAndSaveToFile(V, R, "./out/evolve_RK4.txt");
     }
 
-    void evolve_forward_Euler(double dt)
+    void evolve_forward_Euler(double dt, mat& R, mat& V)
     {
-        mat R = mat(3, n).fill(0);
-        mat V = mat(3, n).fill(0);
-
         for (int i = 0; i < n; i++)
         {
             Particle p = particles[i];
@@ -171,36 +174,5 @@ public:
             V.col(i) = p.v + a * dt;
             R.col(i) = p.r + p.v * dt;
         }
-
-        V.print("evolve_forward_Euler V= ");
-        R.print("evolve_forward_Euler R= ");
-
-        printAndSaveToFile(V, R, "./out/evolve_forward_Euler.txt");
-    }
-
-    void printAndSaveToFile(mat V, mat R, string filename)
-    {
-        int width = 12;
-        int prec = 4;
-
-        ofstream ofile;
-        ofile.open(filename);
-
-        cout << setw(width) << setprecision(prec) << scientific << "R"
-             << setw(width) << setprecision(prec) << scientific << "V"
-             << endl;
-
-        for (int i = 0; i < V.size(); i++)
-        {
-
-            cout << setw(width) << setprecision(prec) << scientific << R(i)
-                 << setw(width) << setprecision(prec) << scientific << V(i)
-                 << endl;
-
-            ofile << setw(width) << setprecision(prec) << scientific << R(i)
-                  << setw(width) << setprecision(prec) << scientific << V(i)
-                  << endl;
-        }
-        ofile.close();
     }
 };

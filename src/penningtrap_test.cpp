@@ -10,44 +10,64 @@ using namespace std;
 int main()
 {
 
-    double B0 = 9.65e1;
-    double V0 = 9.65e8;
-    double d = 10e4;
-    int n = 2;
-
     int t = 100;
     int N = 1000;
     double dt = t * (1. / N);
 
-    PenningTrap pt(B0, V0, d, n);
+    double B0 = 9.65e1;
+    double V0 = 9.65e8;
+    double d = 10e4;
+    int number_of_particles = 2;
 
-    for (int i = 0; i < n; i++)
+    PenningTrap trap(B0, V0, d, number_of_particles);
+
+    for (int i = 0; i < number_of_particles; i++)
     {
         Particle particle_i(1., 40.078, vec(3, fill::randu), vec(3, fill::randu));
-        pt.add_particle(particle_i);
+        trap.add_particle(particle_i);
     }
 
-    vec electricfield = pt.external_E_field(0);
-    electricfield.print("p1 electricfield");
-    vec magneticfield = pt.external_B_field(0);
-    magneticfield.print("p1 magneticfield");
+    vec time = linspace(0, t, t / dt);
 
-    vec force = pt.force_particle(0, 1);
-    force.print("force");
+    ofstream ofile;
+    ofile.open("./out/data.txt");
+    int width = 12;
+    int prec = 4;
 
-    cout << endl
-         << endl
-         << "evolve_RK4 "
-         << endl
+    cout << setw(width) << setprecision(prec) << scientific << "dt"
+         << setw(width) << setprecision(prec) << scientific << "R"
+         << setw(width) << setprecision(prec) << scientific << "V"
          << endl;
-    pt.evolve_RK4(.1);
 
-//    cout << endl
-//         << endl
-//         << "evolve_forward_Euler "
-//         << endl
-//         << endl;
-//    pt.evolve_forward_Euler(.1);
+    ofile <<"# "<< setprecision(prec) << scientific << "dt"
+         << setw(width) << setprecision(prec) << scientific << "R"
+         << setw(width) << setprecision(prec) << scientific << "V"
+         << endl;
 
+    for (int k = 0; k < N; k++)
+    {
+        double dt1 = time(k);
+        mat R = mat(3, number_of_particles).fill(0);
+        mat V = mat(3, number_of_particles).fill(0);
+        trap.evolve_RK4(dt1, R, V);
+
+        for (int i = 0; i < R.size(); i++)
+        {
+
+            cout << setw(width) << setprecision(prec) << scientific << dt1
+                 << setw(width) << setprecision(prec) << scientific << R(i)
+                 << setw(width) << setprecision(prec) << scientific << V(i)
+                 << endl;
+
+            ofile << setw(width) << setprecision(prec) << scientific << dt1
+                  << setw(width) << setprecision(prec) << scientific << R(i)
+                  << setw(width) << setprecision(prec) << scientific << V(i)
+                  << endl;
+        }
+
+        cout << "---------------------------" << endl;
+    }
+
+    ofile.close();
     return 0;
 }
