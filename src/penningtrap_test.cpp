@@ -17,7 +17,7 @@ int main()
     double B0 = 9.65e1;
     double V0 = 9.65e8;
     double d = 10e4;
-    int number_of_particles = 2;
+    int number_of_particles = 1;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
 
