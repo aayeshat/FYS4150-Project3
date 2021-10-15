@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-
+   
     int t = 100;
     int N = 1000;
     double dt = t * (1. / N);
@@ -27,7 +27,7 @@ int main()
         trap.add_particle(particle_i);
     }
 
-    vec time = linspace(0, t, t / dt);
+     vec time = linspace(0, t, t / dt);
 
     ofstream ofile;
     ofile.open("./out/data.txt");
@@ -68,6 +68,6 @@ int main()
         cout << "---------------------------" << endl;
     }
 
-    ofile.close();
+    ofile.close(); 
     return 0;
 }
