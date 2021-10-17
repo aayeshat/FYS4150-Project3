@@ -68,7 +68,17 @@ public:
 
         return force;
     }
-
+  vec coulomb_interaction(int i, int j)
+    {
+        if (i != j)
+        {
+            return force_particle(i, j);
+        }
+        else
+        {
+            return vec(3).fill(0);
+        }
+    }
     vec total_force_external(int i)
     {
 
@@ -92,11 +102,9 @@ public:
       {
            if (i != j)
             {
-                F += force_particle(i, j);
+                F += coulomb_interaction(i, j);
             }
-            else {
-
-}
+           
         }
         return F;
     }
@@ -167,7 +175,7 @@ public:
         mat R = mat(3, n).fill(0);
         mat V = mat(3, n).fill(0);
 
-        for (int i = 0; i < n + 1; i++)
+        for (int i = 0; i < n ; i++)
         {
             Particle p = particles[i];
             vec F = total_force(i);
@@ -217,12 +225,11 @@ int main()
     double B0 = 9.65e1;
     double V0 = 9.65e8;
     double d = 10e4;
-    int n = 1; //number of particles
+    int n = 2; //number of particles
 
     int t = 100;
     int N = 1000;
-    int t0 = 0;
-    int tf = 100;
+    
     double dt = t * (1. / N);
     //vec t = linspace(t0, tf, dt);
 
@@ -249,12 +256,12 @@ int main()
          << endl;
     pt.evolve_RK4(.1);
 
-    cout << endl
+   /*  cout << endl
          << endl
          << "evolve_forward_Euler "
          << endl
          << endl;
-    pt.evolve_forward_Euler(.1);
+    pt.evolve_forward_Euler(.1); */
 
     return 0;
 }

@@ -12,11 +12,11 @@ int main()
     int t0 = 0;
     int t = 100;
     int N = 1002;
-
+   
     double B0 = 96.5;
     double V0 = 9.65; //v0/d^2
     double d = 10e4;
-    int number_of_particles = 1;
+    int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
 
@@ -32,10 +32,10 @@ int main()
     int prec = 4;
 
     ofstream ofileV;
-    ofileV.open("./out/data_V.txt");
+    ofileV.open("./out/data_V2.txt");
 
     ofstream ofileR;
-    ofileR.open("./out/data_R.txt");
+    ofileR.open("./out/data_R2.txt");
 
     for (int k = 0; k < N; k++)
     {
