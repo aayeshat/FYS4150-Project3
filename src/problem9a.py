@@ -13,6 +13,7 @@ t, r_x, r_y, r_z = np.loadtxt(
 )
 
 plt.plot(t, r_z)
+
 # add axis labels
 plt.xlabel("Time [$\mu s$]")
 plt.ylabel("Motion in z direction")

@@ -175,6 +175,53 @@ public:
         }
     }
 
+    void evolve_RK4(double dt, int i, mat &R, mat &V)
+    {
+
+        vec position_;
+        vec velocity_;
+
+        Particle p = particles[i];
+        double m = p.m;
+
+        vec initial_r = p.r; // particle initial position
+        vec initial_v = p.v; // particle initial velocity
+
+        //K1
+        vec k1_r = dt * p.v;
+        vec k1_v = dt * total_force(i) / m;
+        particles[i].r = initial_r + k1_r / 2;
+        particles[i].v = initial_v + k1_v / 2;
+
+        //K2
+        vec k2_r = dt * particles[i].v;
+        vec k2_v = dt * total_force(i) / m;
+
+        particles[i].r = initial_r + k2_r / 2;
+        particles[i].v = initial_v + k2_v / 2;
+
+        //K3
+        vec k3_r = dt * particles[i].v;
+        vec k3_v = dt * total_force(i) / m;
+
+        particles[i].r = initial_r + k3_r / 2;
+        particles[i].v = initial_v + k3_v / 2;
+
+        //K4
+        vec k4_r = dt * particles[i].v;
+        vec k4_v = dt * total_force(i) / m;
+
+        vec r_step = initial_r + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
+        vec v_step = initial_v + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
+
+        R.col(i) = r_step;
+        V.col(i) = v_step;
+
+        // reset to initial
+        // particles[i].r = initial_r;
+        // particles[i].v = initial_v;
+    }
+
     void evolve_forward_Euler(double dt)
     {
         R = mat(3, n).fill(0);
