@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 t, r1_x, r1_y, r1_z, r2_x, r2_y, r2_z = np.loadtxt(
-    "./out/data_R2.txt", usecols=(0, 1, 2, 3, 4, 5, 6), unpack=True, skiprows=0
+    "./out/data_R.txt", usecols=(0, 1, 2, 3, 4, 5, 6), unpack=True, skiprows=0
 )
 
 plt.plot(r1_x, r1_y)

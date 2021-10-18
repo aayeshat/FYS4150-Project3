@@ -12,7 +12,7 @@ int main()
     int t0 = 0;
     int t = 100;
     int N = 1002;
-   
+
     double B0 = 96.5;
     double V0 = 9.65; //v0/d^2
     double d = 10e4;
@@ -40,23 +40,21 @@ int main()
     for (int k = 0; k < N; k++)
     {
         double dt = time(k);
-        mat R = mat(3, number_of_particles).fill(0);
-        mat V = mat(3, number_of_particles).fill(0);
-
-        trap.evolve_RK4(dt, V, R);
-        //trap.evolve_forward_Euler(dt, V, R);
+     
+        trap.evolve_RK4(dt);
+        //trap.evolve_forward_Euler(dt);
 
         ofileV << setw(width) << setprecision(prec) << scientific << dt;
-        for (int i = 0; i < V.size(); i++)
+        for (int i = 0; i < trap.V.size(); i++)
         {
-            ofileV << setw(width) << setprecision(prec) << scientific << V(i);
+            ofileV << setw(width) << setprecision(prec) << scientific << trap.V(i);
         }
         ofileV << endl;
 
         ofileR << setw(width) << setprecision(prec) << scientific << dt;
-        for (int i = 0; i < R.size(); i++)
+        for (int i = 0; i < trap.R.size(); i++)
         {
-            ofileR << setw(width) << setprecision(prec) << scientific << R(i);
+            ofileR << setw(width) << setprecision(prec) << scientific <<trap. R(i);
         }
         ofileR << endl;
     }
