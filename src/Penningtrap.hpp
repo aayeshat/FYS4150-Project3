@@ -115,10 +115,14 @@ public:
     vec total_force(int i)
     {
         vec F = vec(3).fill(0);
-        for (int k = 0; k <= 2; k++)
+        if (interaction)
         {
-            F(k) = total_force_particles(i)(k) + total_force_external(i)(k);
+            for (int k = 0; k <= 2; k++)
+            {
+                F(k) = total_force_particles(i)(k) + total_force_external(i)(k);
+            }
         }
+
         return F;
     }
 
@@ -218,8 +222,8 @@ public:
         V.col(i) = v_step;
 
         // reset to initial
-        // particles[i].r = initial_r;
-        // particles[i].v = initial_v;
+        particles[i].r = initial_r;
+        particles[i].v = initial_v;
     }
 
     void evolve_forward_Euler(double dt)
