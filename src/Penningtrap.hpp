@@ -14,6 +14,7 @@ public:
     double V0;
     double d;
     int n;
+
     double ke = 1.38935333e5;
     vector<Particle> particles;
 
@@ -74,7 +75,7 @@ public:
         return force;
     }
 
-    //total force onparticle i due to external fields
+    //total force on particle i due to external fields
 
     vec total_force_external(int i)
     {
@@ -122,7 +123,13 @@ public:
                 F(k) = total_force_particles(i)(k) + total_force_external(i)(k);
             }
         }
-
+        else
+        {
+            for (int k = 0; k <= 2; k++)
+            {
+                F(k) = total_force_external(i)(k);
+            }
+        }
         return F;
     }
 
