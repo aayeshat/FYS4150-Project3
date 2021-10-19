@@ -40,34 +40,37 @@ int main()
     // with interactions
     cube R(3, N, trap.particles.size(), fill::zeros);
 
-    ofstream myfile_t;
-    myfile_t.open("./out/time.txt");
-    for (int i = 0; i < N; i++)
+    ofstream out;
+    out.open("./out/r_values.txt");
+
+    for (int k = 0; k < N; k++)
     {
-        for (int j = 0; j < trap.particles.size(); j++)
+        out << setprecision(4) << scientific << (k * dt);
+        for (int i = 0; i < trap.particles.size(); i++)
         {
-            if (i == 0)
+            if (k == 0)
             {
-                R.slice(j).col(i) = trap.particles[j].r;
-                r_step.col(j) = trap.particles[j].r;
-                v_step.col(j) = trap.particles[j].v;
+                R.slice(i).col(k) = trap.particles[i].r;
+
+                r_step.col(i) = trap.particles[i].r;
+                v_step.col(i) = trap.particles[i].v;
             }
             else
             {
-                trap.evolve_RK4(dt, j, r_step, v_step);
-                R.slice(j).col(i) = r_step.col(j);
+                trap.evolve_RK4(dt, i, r_step, v_step);
+                R.slice(i).col(k) = r_step.col(i);
+            }
+
+            mat col = R.slice(i).col(k).t();
+            for (int j = 0; j < 3; j++)
+            {
+                out << "   " << col(j);
             }
         }
 
-        myfile_t << (i * dt) << endl;
+        out << endl;
     }
 
-
-    ofstream myfile1_inter;
-    myfile1_inter.open("./out/r_values.txt");
-    myfile1_inter << R.slice(0).t();
-    myfile1_inter.close();
-
-
+    out.close();
     return 0;
 }
