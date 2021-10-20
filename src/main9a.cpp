@@ -28,29 +28,28 @@ int main()
         Particle particle_i(1., 40.078, r, v);
         trap.add_particle(particle_i);
     }
-
-    mat position1_evol_inter(N, 3);
-    mat position2_evol_inter(N, 3);
-    mat position1_evol_nointer(N, 3);
-    mat position2_evol_nointer(N, 3);
-
+    
     mat r_step(3, number_of_particles);
     mat v_step(3, number_of_particles);
 
-    // with interactions
     cube R(3, N, trap.particles.size(), fill::zeros);
+    cube V(3, N, trap.particles.size(), fill::zeros);
 
-    ofstream out;
-    out.open("./out/r_values.txt");
+    ofstream position_out;
+    position_out.open("./out/r_values.txt");
+    ofstream velocity_out;
+    velocity_out.open("./out/v_values.txt");
 
     for (int k = 0; k < N; k++)
     {
-        out << setprecision(4) << scientific << (k * dt);
+        position_out << setprecision(4) << scientific << (k * dt);
+        velocity_out << setprecision(4) << scientific << (k * dt);
         for (int i = 0; i < trap.particles.size(); i++)
         {
             if (k == 0)
             {
                 R.slice(i).col(k) = trap.particles[i].r;
+                V.slice(i).col(k) = trap.particles[i].v;
 
                 r_step.col(i) = trap.particles[i].r;
                 v_step.col(i) = trap.particles[i].v;
@@ -59,18 +58,23 @@ int main()
             {
                 trap.evolve_RK4(dt, i, r_step, v_step);
                 R.slice(i).col(k) = r_step.col(i);
+                V.slice(i).col(k) = v_step.col(i);
             }
 
-            mat col = R.slice(i).col(k).t();
+            mat colR = R.slice(i).col(k).t();
+            mat colV = V.slice(i).col(k).t();
             for (int j = 0; j < 3; j++)
             {
-                out << "   " << col(j);
+                position_out << "   " << colR(j); 
+                velocity_out << "   " << colV(j); 
             }
         }
 
-        out << endl;
+        position_out << endl;
+        velocity_out << endl;
     }
 
-    out.close();
+    position_out.close();
+    velocity_out.close();
     return 0;
 }

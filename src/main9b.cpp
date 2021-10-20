@@ -20,7 +20,7 @@ int main()
     int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
-    trap.interaction = true;
+    trap.interaction = false;
 
     for (int i = 0; i < number_of_particles; i++)
     {
@@ -30,27 +30,41 @@ int main()
         trap.add_particle(particle_i);
     }
 
-    mat position1_evol_inter(N, 3);
-    mat position2_evol_inter(N, 3);
-    mat position1_evol_nointer(N, 3);
-    mat position2_evol_nointer(N, 3);
-
     mat r_step(3, number_of_particles);
     mat v_step(3, number_of_particles);
 
-    // with coloumbib interactions
     cube R(3, N, trap.particles.size(), fill::zeros);
+    cube V(3, N, trap.particles.size(), fill::zeros);
 
-    ofstream out;
-    out.open("./out/xy_inter_1_2.txt");
+    ofstream position_out;
+    string position_out_filename;
+
+    ofstream velocity_out;
+    string velocity_out_filename;
+
+    if (trap.interaction)
+    {
+        position_out_filename = "./out/r_xy_inter_1_2.txt";
+        velocity_out_filename = "./out/v_xy_inter_1_2.txt";
+    }
+    else
+    {
+        position_out_filename = "./out/r_xy_nointer_1_2.txt";
+        velocity_out_filename = "./out/v_xy_nointer_1_2.txt";
+    }
+    position_out.open(position_out_filename);
+    velocity_out.open(velocity_out_filename);
+
     for (int k = 0; k < N; k++)
     {
-        out << setprecision(4) << scientific << (k * dt);
+        position_out << setprecision(4) << scientific << (k * dt);
+        velocity_out << setprecision(4) << scientific << (k * dt);
         for (int i = 0; i < trap.particles.size(); i++)
         {
             if (k == 0)
             {
                 R.slice(i).col(k) = trap.particles[i].r;
+                V.slice(i).col(k) = trap.particles[i].v;
 
                 r_step.col(i) = trap.particles[i].r;
                 v_step.col(i) = trap.particles[i].v;
@@ -58,20 +72,26 @@ int main()
             else
             {
                 trap.evolve_RK4(dt, i, r_step, v_step);
+
                 R.slice(i).col(k) = r_step.col(i);
+                V.slice(i).col(k) = v_step.col(i);
             }
 
-            mat col = R.slice(i).col(k).t();
+            mat Rcol = R.slice(i).col(k).t();
+            mat Vcol = V.slice(i).col(k).t();
             for (int j = 0; j < 3; j++)
             {
-                out << "   " << col(j);
+                position_out << "   " << Rcol(j);
+                velocity_out << "   " << Vcol(j);
             }
         }
 
-        out << endl;
+        position_out << endl;
+        velocity_out << endl;
     }
 
-    out.close();
+    position_out.close();
+    velocity_out.close();
 
     return 0;
 }

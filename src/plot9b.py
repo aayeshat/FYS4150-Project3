@@ -15,7 +15,19 @@ mpl.rcParams["ytick.labelsize"] = 12
 mpl.rcParams["legend.fontsize"] = 7.5
 plt.rcParams["figure.figsize"] = (7, 5)
 
-filename= "./out/xy_inter_1_2.txt"
+interaction = False # True or False
+
+filename=""
+outfilename=""
+
+if interaction == True :
+  filename= "./out/r_xy_inter_1_2.txt"
+  outfilename="./out/plot_9b_inter.pdf"
+else:
+  filename= "./out/r_xy_nointer_1_2.txt"
+  outfilename="./out/plot_9b_nointer.pdf"
+
+
 t = np.loadtxt(filename, usecols=0, dtype="double")
 
 
@@ -35,9 +47,5 @@ plt.plot(r_x_2, r_y_2, color="red", label="particle 2")
 plt.xlabel("x")
 plt.ylabel("y")
 plt.legend()
-
-# add grid
 plt.grid(linestyle="--", linewidth=0.2)
-
-# save plot as pdf
-plt.savefig("./out/plot_9b.pdf")
+plt.savefig(outfilename)
