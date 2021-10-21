@@ -4,7 +4,6 @@ import math
 # inline plots
 import matplotlib.pyplot as plt
 
-
 # nicer figures
 import matplotlib as mpl
 
@@ -27,9 +26,7 @@ else:
   filename= "./out/r_xy_nointer_1_2.txt"
   outfilename="./out/plot_9b_nointer.pdf"
 
-
 t = np.loadtxt(filename, usecols=0, dtype="double")
-
 
 # with interaction
 # reading r values two particles

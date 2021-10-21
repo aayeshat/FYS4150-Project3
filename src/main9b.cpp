@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     int t0 = 0;
-    double t = 150.;
+    double t = 100.;
     double N = 100000.;
     double dt = t / N;
 
@@ -20,7 +20,7 @@ int main()
     int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
-    trap.interaction = true;
+    trap.interaction = false;
 
     for (int i = 0; i < number_of_particles; i++)
     {
@@ -28,15 +28,7 @@ int main()
         vec v = vec(3, fill::randu);
         Particle particle_i(1., 40.078, r, v);
         trap.add_particle(particle_i);
-        Particle particle_i(1., 40.078, r, v);
-        trap.add_particle(p_old );
     }
-
-    mat r_step(3, number_of_particles);
-    mat v_step(3, number_of_particles);
-
-    cube R(3, N, trap.particles.size(), fill::zeros);
-    cube V(3, N, trap.particles.size(), fill::zeros);
 
     ofstream position_out;
     string position_out_filename;
@@ -59,32 +51,39 @@ int main()
 
     for (int k = 0; k < N; k++)
     {
+
+        mat r_step;
+        mat v_step;
+
         position_out << setprecision(4) << scientific << (k * dt);
         velocity_out << setprecision(4) << scientific << (k * dt);
-        for (int i = 0; i < trap.particles.size(); i++)
-        {
-            if (k == 0)
-            {
-                R.slice(i).col(k) = trap.particles[i].r;
-                V.slice(i).col(k) = trap.particles[i].v;
 
+        if (k == 0)
+        {
+            r_step = mat(3, number_of_particles);
+            v_step = mat(3, number_of_particles);
+
+            for (int i = 0; i < number_of_particles; i++)
+            {
                 r_step.col(i) = trap.particles[i].r;
                 v_step.col(i) = trap.particles[i].v;
             }
-            else
-            {
-                trap.evolve_RK4(dt, i, r_step, v_step);
+        }
+        else
+        {
+            trap.evolve_RK4(dt);
+            r_step = trap.r_step;
+            v_step = trap.v_step;
+        }
 
-                R.slice(i).col(k) = r_step.col(i);
-                V.slice(i).col(k) = v_step.col(i);
-            }
-
-            mat Rcol = R.slice(i).col(k).t();
-            mat Vcol = V.slice(i).col(k).t();
+        for (int i = 0; i < number_of_particles; i++)
+        {
+            vec p_r = r_step.col(i);
+            vec p_v = v_step.col(i);
             for (int j = 0; j < 3; j++)
             {
-                position_out << "   " << Rcol(j);
-                velocity_out << "   " << Vcol(j);
+                position_out << "   " << p_r(j);
+                velocity_out << "   " << p_v(j);
             }
         }
 
