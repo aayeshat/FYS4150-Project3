@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     int t0 = 0;
-    double t = 100.;
+    double t = 150.;
     double N = 100000.;
     double dt = t / N;
 
@@ -20,7 +20,7 @@ int main()
     int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
-    trap.interaction = false;
+    trap.interaction = true;
 
     for (int i = 0; i < number_of_particles; i++)
     {
@@ -28,6 +28,8 @@ int main()
         vec v = vec(3, fill::randu);
         Particle particle_i(1., 40.078, r, v);
         trap.add_particle(particle_i);
+        Particle particle_i(1., 40.078, r, v);
+        trap.add_particle(p_old );
     }
 
     mat r_step(3, number_of_particles);
