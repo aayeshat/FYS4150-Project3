@@ -74,7 +74,7 @@ public:
 
         vec r3 = abs(r) % abs(r) % abs(r);
 
-        vec force = ke * (pi.q * pj.q) / r3 % r;
+        vec force = ke * (pi.q * pj.q) / r3 ;
 
         return force;
     }
@@ -181,10 +181,7 @@ public:
 
             k2_r.col(i) = dt * p.v;
             k2_v.col(i) = dt * total_force(i) / p.m;
-        }
 
-        for (int i = 0; i < n; i++)
-        {
             particles[i].r = initial_r.col(i) + 0.5 * k2_r.col(i);
             particles[i].v = initial_v.col(i) + 0.5 * k2_v.col(i);
         }
@@ -210,15 +207,16 @@ public:
             Particle p = particles[i];
             k4_r.col(i) = dt * p.v;
             k4_v.col(i) = dt * total_force(i) / p.m;
+
+            particles[i].r = initial_r.col(i) + (k1_r.col(i) + 2 * k2_r.col(i) + 2 * k3_r.col(i) + k4_r.col(i)) / 6;
+            particles[i].v = initial_v.col(i) + (k1_v.col(i) + 2 * k2_v.col(i) + 2 * k3_v.col(i) + k4_v.col(i)) / 6;
+
         }
 
         for (int i = 0; i < n; i++)
         {
-            vec r_step_vec = initial_r.col(i) + (k1_r.col(i) + 2 * k2_r.col(i) + 2 * k3_r.col(i) + k4_r.col(i)) / 6;
-            vec v_step_vec = initial_v.col(i) + (k1_v.col(i) + 2 * k2_v.col(i) + 2 * k3_v.col(i) + k4_v.col(i)) / 6;
-
-            r_step.col(i) = r_step_vec;
-            v_step.col(i) = v_step_vec;
+            r_step.col(i) = particles[i].r;
+            v_step.col(i) =  particles[i].v;
         }
     }
 

@@ -14,7 +14,7 @@ mpl.rcParams["ytick.labelsize"] = 12
 mpl.rcParams["legend.fontsize"] = 7.5
 plt.rcParams["figure.figsize"] = (7, 5)
 
-interaction = False # True or False
+interaction = True # True or False
 
 filename=""
 outfilename=""
