@@ -11,7 +11,7 @@ int main()
 {
     int t0 = 0;
     double t = 100.;
-    double N = 100000.;
+    double N = 10000.;
     double dt = t / N;
 
     double B0 = 96.5;
@@ -20,7 +20,7 @@ int main()
     int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
-    trap.interaction = false;
+    trap.interaction = false; //switch for coulombic interactions true (with coulombic interactions)
 
     for (int i = 0; i < number_of_particles; i++)
     {

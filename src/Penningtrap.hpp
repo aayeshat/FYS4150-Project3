@@ -14,6 +14,7 @@ public:
     double V0;
     double d;
     int n;
+   
 
     double ke = 1.38935333e5;
     vector<Particle> particles;
@@ -136,54 +137,8 @@ public:
         return F;
     }
 
-    // run all steps of RK4 on particle then start other
-    void evolve_RK4_1(double dt)
-    {
-
-        for (int i = 0; i < n; i++)
-        {
-
-            Particle p = particles[i];
-            double m = p.m;
-
-            vec initial_r = p.r; // particle initial position
-            vec initial_v = p.v; // particle initial velocity
-
-            //K1
-            vec k1_r = dt * p.v;
-            vec k1_v = dt * total_force(i) / m;
-            particles[i].r = initial_r + k1_r / 2;
-            particles[i].v = initial_v + k1_v / 2;
-
-            //K2
-            vec k2_r = dt * particles[i].v;
-            vec k2_v = dt * total_force(i) / m;
-
-            particles[i].r = initial_r + k2_r / 2;
-            particles[i].v = initial_v + k2_v / 2;
-
-            //K3
-            vec k3_r = dt * particles[i].v;
-            vec k3_v = dt * total_force(i) / m;
-
-            particles[i].r = initial_r + k3_r / 2;
-            particles[i].v = initial_v + k3_v / 2;
-
-            //K4
-            vec k4_r = dt * particles[i].v;
-            vec k4_v = dt * total_force(i) / m;
-
-            vec r_step_vec = initial_r + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6;
-            vec v_step_vec = initial_v + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6;
-
-            r_step.col(i) = r_step_vec;
-            v_step.col(i) = v_step_vec;
-        }
-    }
-
     void evolve_RK4(double dt)
     {
-
         mat initial_r(3, n);
         mat initial_v(3, n);
 
@@ -211,6 +166,10 @@ public:
 
             k1_r.col(i) = dt * p.v;
             k1_v.col(i) = dt * total_force(i) / p.m;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
             particles[i].r = initial_r.col(i) + k1_r.col(i) / 2;
             particles[i].v = initial_v.col(i) + k1_v.col(i) / 2;
         }
@@ -222,8 +181,12 @@ public:
 
             k2_r.col(i) = dt * p.v;
             k2_v.col(i) = dt * total_force(i) / p.m;
-            particles[i].r = initial_r.col(i) + k2_r.col(i) / 2;
-            particles[i].v = initial_v.col(i) + k2_v.col(i) / 2;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            particles[i].r = initial_r.col(i) + 0.5 * k2_r.col(i);
+            particles[i].v = initial_v.col(i) + 0.5 * k2_v.col(i);
         }
 
         //K3
@@ -233,10 +196,14 @@ public:
 
             k3_r.col(i) = dt * p.v;
             k3_v.col(i) = dt * total_force(i) / p.m;
-            particles[i].r = initial_r.col(i) + k3_r.col(i) / 2;
-            particles[i].v = initial_v.col(i) + k3_v.col(i) / 2;
+            particles[i].r = initial_r.col(i) + k3_r.col(i) * 0.5;
+            particles[i].v = initial_v.col(i) + k3_v.col(i) * 0.5;
         }
-
+        for (int i = 0; i < n; i++)
+        {
+            particles[i].r = initial_r.col(i) + k3_r.col(i) * 0.5;
+            particles[i].v = initial_v.col(i) + k3_v.col(i) * 0.5;
+        }
         //K4
         for (int i = 0; i < n; i++)
         {
@@ -258,15 +225,24 @@ public:
     void
     evolve_forward_Euler(double dt)
     {
+        mat  a(3,n);
+        
         for (int i = 0; i < n; i++)
         {
-            Particle p = particles[i];
+           Particle p = particles[i]; 
             vec F = total_force(i);
 
-            vec a = F / p.m;
 
-            r_step.col(i) = p.v + a * dt;
-            r_step.col(i) = p.r + p.v * dt;
+             a = F / p.m;
+
+           a.col(i) =  F / p.m;
+        }
+
+        for (int i = 0; i < n; i++)
+        { 
+            Particle p = particles[i];
+             v_step.col(i) =  p.v + a.col(i) * dt;
+             r_step.col(i) =  p.r + p.v * dt;
         }
     }
 };

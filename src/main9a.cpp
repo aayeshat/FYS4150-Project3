@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     int t0 = 0;
-    double t = 100.;
+    double t = 1000.;
     double N = 10000.;
     double dt = t / N;
 

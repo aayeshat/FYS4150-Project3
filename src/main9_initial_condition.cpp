@@ -20,23 +20,27 @@ int main()
     int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
-    trap.interaction = false;
+    trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
 
     for (int i = 0; i < number_of_particles; i++)
     {
-        vec r;
+        vec r, v;
         if (i == 0)
         {
-            r = vec(3).fill(0);
-            r(0) = 10.;
-            r(2) = 10.;
+            r = vec(3).fill(0)*10e4;
+
+            r(2) = 100.;
+            r(0) = 100.;
+
+            v = vec(3).fill(0);
+            v(1) = 100.;
         }
         else
         {
-            r = vec(3, fill::randu);
+            r = vec(3, fill::randn);
+            v = vec(3).randn()*0.001;
         }
 
-        vec v = vec(3).fill(1);
         Particle particle_i(1., 40.078, r, v);
         trap.add_particle(particle_i);
     }

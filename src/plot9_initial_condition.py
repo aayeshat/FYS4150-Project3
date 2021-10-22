@@ -5,7 +5,7 @@ import math
 import matplotlib.pyplot as plt
 
 
-# nicer figures
+#  figures
 import matplotlib as mpl
 
 mpl.rcParams["axes.titlesize"] = 16
@@ -22,7 +22,7 @@ outfilename=""
 
 if interaction == True :
   filename= "./out/r_xy_inter_1_2_initial_condition.txt"
-  outfilename="./out/ic_plot_9b_inter_initial_condition.pdf"
+  outfilename="./out/plot_9b_inter_initial_condition.pdf"
 else:
   filename= "./out/r_xy_nointer_1_2_initial_condition.txt"
   outfilename="./out/plot_9b_nointer_initial_condition.pdf"
@@ -40,8 +40,8 @@ r_x_2 = np.loadtxt(filename, usecols=4, dtype="double")
 r_y_2 = np.loadtxt(filename, usecols=5, dtype="double")
 r_z_1 = np.loadtxt(filename, usecols=6, dtype="double")
 # Plotting motion of two particles with interactions
-plt.plot(r_x_1, r_y_1, color="blue", label="particle 1")
-plt.plot(r_x_2, r_y_2, color="red", label="particle 2")
+plt.scatter(r_x_1, r_y_1, color="blue", label="particle 1")
+plt.scatter(r_x_2, r_y_2, color="red", label="particle 2")
 
 # add axis labels and legend
 plt.xlabel("x")
