@@ -14,7 +14,6 @@ public:
     double V0;
     double d;
     int n;
-   
 
     double ke = 1.38935333e5;
     vector<Particle> particles;
@@ -74,7 +73,7 @@ public:
 
         vec r3 = abs(r) % abs(r) % abs(r);
 
-        vec force = ke * (pi.q * pj.q) / r3 ;
+        vec force = ke * (pi.q * pj.q) / r3;
 
         return force;
     }
@@ -196,11 +195,7 @@ public:
             particles[i].r = initial_r.col(i) + k3_r.col(i) * 0.5;
             particles[i].v = initial_v.col(i) + k3_v.col(i) * 0.5;
         }
-        for (int i = 0; i < n; i++)
-        {
-            particles[i].r = initial_r.col(i) + k3_r.col(i) * 0.5;
-            particles[i].v = initial_v.col(i) + k3_v.col(i) * 0.5;
-        }
+
         //K4
         for (int i = 0; i < n; i++)
         {
@@ -210,37 +205,32 @@ public:
 
             particles[i].r = initial_r.col(i) + (k1_r.col(i) + 2 * k2_r.col(i) + 2 * k3_r.col(i) + k4_r.col(i)) / 6;
             particles[i].v = initial_v.col(i) + (k1_v.col(i) + 2 * k2_v.col(i) + 2 * k3_v.col(i) + k4_v.col(i)) / 6;
-
         }
 
         for (int i = 0; i < n; i++)
         {
             r_step.col(i) = particles[i].r;
-            v_step.col(i) =  particles[i].v;
+            v_step.col(i) = particles[i].v;
         }
     }
 
-    void
-    evolve_forward_Euler(double dt)
+    void evolve_forward_Euler(double dt)
     {
-        mat  a(3,n);
-        
+
         for (int i = 0; i < n; i++)
         {
-           Particle p = particles[i]; 
+            Particle p = particles[i];
             vec F = total_force(i);
+            vec a = F / p.m;
 
-
-             a = F / p.m;
-
-           a.col(i) =  F / p.m;
+            particles[i].v = p.v + a * dt;
+            particles[i].r = p.r + p.v * dt;
         }
 
         for (int i = 0; i < n; i++)
-        { 
-            Particle p = particles[i];
-             v_step.col(i) =  p.v + a.col(i) * dt;
-             r_step.col(i) =  p.r + p.v * dt;
+        {
+            r_step.col(i) = particles[i].r;
+            v_step.col(i) = particles[i].v;
         }
     }
 };

@@ -20,6 +20,7 @@ int main()
     int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
+    
     trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
     
 
