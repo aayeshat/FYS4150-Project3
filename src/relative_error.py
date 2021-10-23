@@ -39,25 +39,32 @@ z_exc = z_0 * (np.cos(w_z * t)) + np.sin(w_z * t)
 
     #Load x y z columns from output files
 
+#Load x y z output from RK
+fname_rk = '../out/r_xy_nointer_1_2.txt'
+x, y, z = np.loadtxt(fname_rk, usecols = (1,2,3), unpack = True)
 
-filename = '../out/r_xy_nointer_1_2.txt'
-x, y, z = np.loadtxt(filename, usecols = (1,2,3), unpack = True)
+r_exc = np.sqrt(x_exc**2 + y_exc**2 + z_exc**2)*100 #multiply with 100 for numbers on same order
+r_rk = np.sqrt(x**2 + y**2 + z**2)
 
+#Relative error RK
+rel_err = ( r_exc - r_rk ) / r_exc
 
-r_exc = np.sqrt(x_exc**2 + y_exc**2 + z_exc**2)*100
-r_i = np.sqrt(x**2 + y**2 + z**2)
+#Load x y z output from FE
+fname_euler = '../out/r_xy_nointer_1_2_euler.txt'
+x_fe, y_fe, z_fe = np.loadtxt(fname_euler, usecols = (1,2,3), unpack = True)
 
-rel_err = ( r_exc - r_i ) / r_exc
-
-print(r_exc)
-print(r_i)
-print(rel_err)
+#Relative error FE
+r_fe = np.sqrt(x_fe**2 + y_fe**2 + z_fe**2)
+rel_err_fe = ( r_exc - r_fe ) / r_exc
 
 # Plotting relative error
-plt.plot(t, rel_err)
+plt.plot(t, rel_err, label = 'RK')
+plt.plot(t, rel_err_fe, label = 'FE')
+plt.legend()
 plt.ylabel('Relative error')
 plt.xlabel('t')
 plt.savefig('../out/rel_err.pdf')
+plt.show()
 
 
 #Plotting analytical solutions
