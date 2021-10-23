@@ -1,94 +1,80 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import List
-
-#
+from glob import glob
 
 q = 1   # Charge
-
-B_0 = 96.5 # Magnetic field
-
+B0 = 96.5 # Magnetic field
 m = 40.078 # Mass of Ca+
+V0_d2 = 9.65 # Applied potential over d squared
+N = 100000 # Steps
+tf = 100 #Final time
+t = np.linspace(0,tf,N) #time
 
-v_0 = 9.65e8 # applied Potential
-
-d =  10000 # dimensinality 10e4
-N = 1000
-tf = 100
-t = np.linspace(0,tf,N)
-
-
-# Initial values  for position
-
+# Initial values
 x_0 = 1
 y_0 = 0
 z_0 = 1
-# Initial values  for position
-v_0 = 0
-v_0 =1
-v_0 = 0
-# Analythical solutions
+v_0 = 1 #velocity in y direction
 
-w_0 = q*(B_0) / m
+# Variables
+w_0 = q*(B0) / m
+w_z = 2 * q * V0_d2 / m  #omega z squared
+w_pos = 0.5 * (w_0 + np.sqrt(w_0**2 - 2 * w_z)) # omega+
+w_neg = 0.5 * (w_0 - np.sqrt(w_0**2 - 2 * w_z)) # omega-
+A_pos = (v_0 + w_neg * x_0) / (w_neg - w_pos) # A+
+A_neg = - (v_0 + w_pos * x_0) / (w_neg - w_pos) # A-
 
-w_z = 2*q*v_0/ (m * d**2)
-w_pos = 0.5 * (w_0 + np.sqrt(w_0**2 - 2 * w_z))
-w_neg = = 0.5 * (w_0 - np.sqrt(w_0**2 - 2 * w_z))
-A_pos = (v_0 + w_neg * x_0) / (w_neg - w_pos)
-A_neg = - (v_0 + w_pos * x_0) / (w_neg - w_pos)
+#Analytical solutions
+x_exc = A_pos * np.cos(w_pos * t) + A_neg * np.cos(w_neg * t)
+y_exc = A_pos * np.sin(w_pos * t) - A_neg * np.sin(w_neg * t)
+z_exc = z_0 * (np.cos(w_z * t)) + np.sin(w_z * t)
 
-''' x(t) = A_pos*cos(w_pos*t) + A_neg*cos(w_neg*t)
-y(t) = A_pos*i*sin(w_pos*t) - A_neg*i*sin(-w_neg*t)
-z(t) = z_0*(cos(w_z*t)) + i*sin(w_z*t) '''
+# h_names = [ "0.01" , "0.05" , "0.1" , "0.5" , "1"]
+#Filenames for numerical output from RK
+# filenames = ['', '', '', '', '']
+# filename = ''
 
+#Loop for plotting relative error for 5 different stepsizes h
+#for i in range(4):
 
-def r_exact(t):
-    x = A_pos*cos(w_pos*t) + A_neg*cos(w_neg*t)
-    y = A_pos*i*sin(w_pos*t) - A_neg*i*sin(-w_neg*t)
-    z = z_0*(cos(w_z*t)) + i*sin(w_z*t)
-    return r = (x, y, z)
-
-    
+    #Load x y z columns from output files
 
 
-
-#  different stepsizes
-
-textnames =
+filename = '../out/r_xy_nointer_1_2.txt'
+x, y, z = np.loadtxt(filename, usecols = (1,2,3), unpack = True)
 
 
- 
-    
-    # Analythical solution
-        
-   
-    
-  
-    # Relative error
-    
-    
-    
-    # Graphs
-            
-    plt.plot()
-    
-    
-# Error convergence rate
+r_exc = np.sqrt(x_exc**2 + y_exc**2 + z_exc**2)*100
+r_i = np.sqrt(x**2 + y**2 + z**2)
 
-ecri = []
+rel_err = ( r_exc - r_i ) / r_exc
 
-for i in  range(1,4):  
-    
-    arg = np.log10(max_error[i]/max_error[i-1]) / np.log10(h[i]/h[i-1])
-    ecri.append( arg  )
-    
-ecr = sum(ecri) / 4
-    
-# General characteristics of the graph
-    
-plt.title("Relative error vs time", fontsize=10)
-plt.ylabel(r'$r_{i}$')
-plt.xlabel("t (μs)")
+print(r_exc)
+print(r_i)
+print(rel_err)
+
+# Plotting relative error
+plt.plot(t, rel_err)
+plt.ylabel('Relative error')
+plt.xlabel('t')
+plt.savefig('../out/rel_err.pdf')
+
+
+#Plotting analytical solutions
+plt.plot(t, x_exc, label = 'x')
+plt.plot(t, y_exc, label = 'y')
+plt.plot(t, z_exc, label = 'z')
+plt.ylabel('x,y,z')
+plt.xlabel('t')
 plt.legend()
-plt.show()
-plt.savefig("relative_error.pdf")
+plt.savefig('../out/analytical_solutions.pdf')
+
+
+#Plotting numerical solutions
+plt.plot(t, x, label = 'x')
+plt.plot(t, y, label = 'y')
+plt.plot(t, z, label = 'z')
+plt.ylabel('x,y,z')
+plt.xlabel('t')
+plt.legend()
+plt.savefig('../out/numerical_solutions.pdf')
