@@ -19,7 +19,7 @@ int main()
     double d = 10e4;
     int number_of_particles = 2;
 
-    PenningTrap trap(B0, V0, d, number_of_particles);
+    PenningTrap trap(B0, V0, d, number_of_particles, -1);
     
     trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
     
