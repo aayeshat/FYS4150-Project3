@@ -11,22 +11,24 @@ int main()
 {
     int t0 = 0;
     double t = 500.;
-    double N = 1000.;
+    double N = 10000.;
     double dt = t / N;
 
-    double B0 = 96.5;
-    double V0 = 0.0025*9.64852558; //v0/d^2
+    double B0 = 9.65e1;
+    double V0 = 0.0025 * 9.64852558 * 1.0e7;
     double d = 500;
-    int number_of_particles = 10;
+    int number_of_particles = 100;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
 
     trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
 
+    arma_rng::set_seed_random();
+
     for (int i = 0; i < number_of_particles; i++)
     {
-         vec  r =  vec(3).randn() * 0.1 * trap.d;
-         vec  v =  vec(3).randn() * 0.1 * trap.d;
+        vec r = vec(3).randn() * 0.1 * trap.d;
+        vec v = vec(3).randn() * 0.1 * trap.d;
 
         Particle particle_i(1., 40.078, r, v);
         trap.add_particle(particle_i);
@@ -36,11 +38,11 @@ int main()
 
     if (trap.interaction)
     {
-        out_filename = "./out/10_inter__0.1.txt";
+        out_filename = "./out/10_inter__.txt";
     }
     else
     {
-        out_filename = "./out/10_nointer__0.txt";
+        out_filename = "./out/10_nointer__.txt";
     }
 
     ofstream out;
@@ -51,21 +53,28 @@ int main()
         trap.omega_v = omega_v;
         for (int k = 0; k < N; k++)
         {
-            trap.evolve_RK4(dt, dt * k);
+            trap.evolve_RK4(dt, k + dt);
         }
 
-        double counter = 0;
+        int number_inside = 0;
         for (int i = 0; i < number_of_particles; i++)
         {
-            mat r_step = trap.r_step / number_of_particles;
-            vec r = trap.r_step.col(i);
-            double sq = sqrt(pow(r(0), 2) + pow(r(1), 2) + pow(r(2), 2));
-            if (sq < trap.d)
+            vec r = trap.particles[i].r;
+            cout << norm(r) << " < " << trap.d << endl;
+            cout << "-------------" << endl;
+            if (norm(r) < trap.d)
             {
-                counter += 1;
+                number_inside += 1;
             }
         }
-        out << setprecision(4) << scientific << omega_v << "   " << counter << endl;
+
+        out << scientific << omega_v << "   " << fixed << number_inside << endl;
+
+        for (int i = 0; i < number_of_particles; i++)
+        {
+            trap.particles[i].r = vec(3).randn() * 0.1 * trap.d;
+            trap.particles[i].v = vec(3).randn() * 0.1 * trap.d;
+        }
     }
 
     out.close();

@@ -8,20 +8,16 @@
 using namespace arma;
 using namespace std;
 
-PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, int n_in) // Constructor
+PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, int n_in)
 {
-    B0 = B0_in; //magnetic filed
-    V0 = V0_in; //Applied Potential
-    d = d_in;   //dimension
+    B0 = B0_in;
+    V0 = V0_in;
+    d = d_in;
     n = n_in;
-
-    r_step = mat(3, n);
-    v_step = mat(3, n);
 }
 
 void PenningTrap::add_particle(Particle p_in)
 {
-    //particles.insert(particles.begin(), p_in);
     particles.push_back(p_in);
 }
 
@@ -29,22 +25,15 @@ vec PenningTrap::external_E_field(int i, double t)
 {
     Particle p = particles[i];
     vec r = p.r;
+    vec E = vec(3).fill(0);
 
-    double V_d = V0 / pow(d, 2);
-    vec E_field(3);
-    double f = 0.1; //amplitudes
-
-    if (sqrt(pow(r(0), 2) + pow(r(1), 2) + pow(r(2), 2)) > d)
+    if (norm(r) <= d)
     {
-        E_field.zeros();
+        E[0] = V0 * (1 + f * cos(omega_v * t)) * r[0] / pow(d, 2);
+        E[1] = V0 * (1 + f * cos(omega_v * t)) * r[1] / pow(d, 2);
+        E[2] = -V0 * (1 + f * cos(omega_v * t)) * 2 * r[2] / pow(d, 2);
     }
-    else
-    {
-        E_field(0) = V_d * r(0) * (1 + f * cos(omega_v * t));
-        E_field(1) = V_d * r(1) * (1 + f * cos(omega_v * t));
-        E_field(2) = -(2 * V_d) * r(2) * (1 + f * cos(omega_v * t));
-    }
-    return E_field;
+    return E;
 }
 
 // External magnetic field at point r=(x,y,z)
@@ -83,7 +72,6 @@ vec PenningTrap::total_force_external(int i, double t)
     vec E = external_E_field(i, t);
 
     vec B = external_B_field(i);
-    // F = q * E + cross(q * v, B);
 
     F(0) = q * (E(0) + v(1) * B(2));
     F(1) = q * (E(1) - v(0) * B(2));
@@ -156,7 +144,7 @@ void PenningTrap::evolve_RK4(double dt, double t)
         Particle p = particles[i];
 
         k1_r.col(i) = dt * p.v;
-        k1_v.col(i) = dt * total_force(i, t) / p.m;
+        k1_v.col(i) = dt * total_force(i, t + 0.5 * dt) / p.m;
     }
 
     for (int i = 0; i < n; i++)
@@ -171,7 +159,7 @@ void PenningTrap::evolve_RK4(double dt, double t)
         Particle p = particles[i];
 
         k2_r.col(i) = dt * p.v;
-        k2_v.col(i) = dt * total_force(i, t) / p.m;
+        k2_v.col(i) = dt * total_force(i, t + 0.5 * dt) / p.m;
 
         particles[i].r = initial_r.col(i) + 0.5 * k2_r.col(i);
         particles[i].v = initial_v.col(i) + 0.5 * k2_v.col(i);
@@ -183,7 +171,7 @@ void PenningTrap::evolve_RK4(double dt, double t)
         Particle p = particles[i];
 
         k3_r.col(i) = dt * p.v;
-        k3_v.col(i) = dt * total_force(i, t) / p.m;
+        k3_v.col(i) = dt * total_force(i, t + 0.5 * dt) / p.m;
         particles[i].r = initial_r.col(i) + k3_r.col(i) * 0.5;
         particles[i].v = initial_v.col(i) + k3_v.col(i) * 0.5;
     }
@@ -193,22 +181,16 @@ void PenningTrap::evolve_RK4(double dt, double t)
     {
         Particle p = particles[i];
         k4_r.col(i) = dt * p.v;
-        k4_v.col(i) = dt * total_force(i, t) / p.m;
+        k4_v.col(i) = dt * total_force(i, t + 0.5 * dt) / p.m;
 
         particles[i].r = initial_r.col(i) + (k1_r.col(i) + 2 * k2_r.col(i) + 2 * k3_r.col(i) + k4_r.col(i)) / 6;
         particles[i].v = initial_v.col(i) + (k1_v.col(i) + 2 * k2_v.col(i) + 2 * k3_v.col(i) + k4_v.col(i)) / 6;
     }
-
-    for (int i = 0; i < n; i++)
-    {
-        r_step.col(i) = particles[i].r;
-        v_step.col(i) = particles[i].v;
-    }
 }
+
 
 void PenningTrap::evolve_forward_Euler(double dt, double t)
 {
-
     for (int i = 0; i < n; i++)
     {
         Particle p = particles[i];
@@ -217,11 +199,5 @@ void PenningTrap::evolve_forward_Euler(double dt, double t)
 
         particles[i].v = p.v + a * dt;
         particles[i].r = p.r + p.v * dt;
-    }
-
-    for (int i = 0; i < n; i++)
-    {
-        r_step.col(i) = particles[i].r;
-        v_step.col(i) = particles[i].v;
     }
 }

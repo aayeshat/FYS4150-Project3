@@ -16,11 +16,10 @@ public:
     int n;
     double omega_v;
 
+    double f = 0.1; //amplitudes
     double ke = 1.38935333e5;
     vector<Particle> particles;
 
-    mat r_step;
-    mat v_step;
     bool interaction = true;
 
     PenningTrap(double B0_in, double V0_in, double d_in, int n_in);
