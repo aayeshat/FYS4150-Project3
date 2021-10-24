@@ -29,12 +29,6 @@ int main()
         trap.add_particle(particle_i);
     }
     
-    mat r_step(3, number_of_particles);
-    mat v_step(3, number_of_particles);
-
-    cube R(3, N, trap.particles.size(), fill::zeros);
-    cube V(3, N, trap.particles.size(), fill::zeros);
-
     ofstream position_out;
     position_out.open("./out/r_values.txt");
     ofstream velocity_out;
@@ -42,31 +36,38 @@ int main()
 
     for (int k = 0; k < N; k++)
     {
+        mat r_step;
+        mat v_step;
+
         position_out << setprecision(4) << scientific << (k * dt);
         velocity_out << setprecision(4) << scientific << (k * dt);
-        for (int i = 0; i < trap.particles.size(); i++)
-        {
-            if (k == 0)
-            {
-                R.slice(i).col(k) = trap.particles[i].r;
-                V.slice(i).col(k) = trap.particles[i].v;
 
+        if (k == 0)
+        {
+            r_step = mat(3, number_of_particles);
+            v_step = mat(3, number_of_particles);
+
+            for (int i = 0; i < number_of_particles; i++)
+            {
                 r_step.col(i) = trap.particles[i].r;
                 v_step.col(i) = trap.particles[i].v;
             }
-            else
-            {
-                trap.evolve_RK4(dt, i, r_step, v_step);
-                R.slice(i).col(k) = r_step.col(i);
-                V.slice(i).col(k) = v_step.col(i);
-            }
+        }
+        else
+        {
+            trap.evolve_RK4(dt);
+            r_step = trap.r_step;
+            v_step = trap.v_step;
+        }
 
-            mat colR = R.slice(i).col(k).t();
-            mat colV = V.slice(i).col(k).t();
+        for (int i = 0; i < number_of_particles; i++)
+        {
+            vec p_r = r_step.col(i);
+            vec p_v = v_step.col(i);
             for (int j = 0; j < 3; j++)
             {
-                position_out << "   " << colR(j); 
-                velocity_out << "   " << colV(j); 
+                position_out << "   " << p_r(j);
+                velocity_out << "   " << p_v(j);
             }
         }
 

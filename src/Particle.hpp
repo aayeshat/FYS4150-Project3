@@ -1,32 +1,19 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
+#ifndef __Particle_hpp__
+#define __Particle_hpp__
+
 #include <armadillo>
 
 using namespace arma;
-using namespace std;
 
 class Particle
 {
 public:
     double q; //charge
     double m; //mass
-    vec r; //position
-    vec v; //velocity
+    vec r;    //position
+    vec v;    //velocity
 
-    Particle(double q_in, double m_in, vec r_in, vec v_in) //constructor
-    {
-        q = q_in;
-        m = m_in;
-        r = r_in;
-        v = v_in;
-    }
-
-    void print_particle() // funtion
-    {
-        cout << "charge = " << q << endl;
-        cout << "mass = " << m << endl;
-        r.print("position = ");
-        v.print("velocity = ");
-    }
+    Particle(double q_in, double m_in, vec r_in, vec v_in); //constructor
 };
+
+#endif
