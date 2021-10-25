@@ -10,8 +10,8 @@ mpl.rcParams["ytick.labelsize"] = 12
 mpl.rcParams["legend.fontsize"] = 7.5
 plt.rcParams["figure.figsize"] = (7, 5)
 
-t = np.loadtxt("./out/r_values.txt", usecols=(0), delimiter='  ', dtype="double")
-r_z = np.loadtxt("./out/r_values.txt", usecols=(3), delimiter='  ', dtype="double")
+t = np.loadtxt("../out/r_values.txt", usecols=(0), delimiter='  ', dtype="double")
+r_z = np.loadtxt("../out/r_values.txt", usecols=(3), delimiter='  ', dtype="double")
 
 plt.plot(t, r_z)
 
@@ -20,4 +20,4 @@ plt.ylabel("Motion of single particle in z direction")
 
 plt.grid(linestyle = '--', linewidth = 0.2)
 
-plt.savefig("./out/plot_9a.pdf")
+plt.savefig("../out/plot_9a.pdf")
