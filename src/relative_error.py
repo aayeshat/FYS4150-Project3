@@ -58,8 +58,8 @@ for i in range(5):
     plt.xlabel('Time / $\mu$s')
     plt.savefig('../out/relerr_rk.pdf')
 
-    plt.plot(t, rel_err_fe, label = "h = " + h_name[i])
-    plt.savefig('../out/relerr_fe.pdf')
+    # plt.plot(t, rel_err_fe, label = "h = " + h_name[i])
+    # plt.savefig('../out/relerr_fe.pdf')
 
 
 
