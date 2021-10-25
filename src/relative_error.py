@@ -37,6 +37,7 @@ z_exc = z_0 * (np.cos(w_z * t)) + np.sin(w_z * t)
 
 filename_rk = ['', '', '', '', '']
 h_name = ['', '', '', '', '']
+filename_f = []
 
 #Loop for plotting relative error for 5 different stepsizes h
 for i in range(4):
