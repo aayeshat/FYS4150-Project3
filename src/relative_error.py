@@ -12,10 +12,10 @@ t = np.linspace(0,tf,N) #time
 d = 1e4
 
 # Initial values
-x_0 = 100
+x_0 = 10
 y_0 = 0
-z_0 = 100
-v_0 = 100 #velocity in y direction
+z_0 = 10
+v_0 = 10 #velocity in y direction
 
 # Variables
 w_0 = q*(B0) / m
@@ -35,14 +35,14 @@ z_exc = z_0 * (np.cos(w_z * t)) + np.sin(w_z * t)
 # filenames = ['', '', '', '', '']
 # filename = ''
 
-filename_rk = ['', '', '', '', '']
-h_name = ['', '', '', '', '']
-filename_f = []
+filename_rk = ['./out/r_1(0.001).txt', './out/r_1(0.01).txt', './out/r_1(0.1).txt', './out/r_1(0.05).txt', './out/r_1(0.005).txt']
+h_name = ['0.001', '0.01', '0.1', '0.05', '0.005']
+filename_fe = ['./out/r_1_euler(0.001).txt','./out/r_1_euler(0.01).txt','./out/r_1_euler(0.1).txt','./out/r_1_euler(0.05).txt','./out/r_1_euler(0.005).txt']
 
 #Loop for plotting relative error for 5 different stepsizes h
 for i in range(4):
-    x_rk, y_rk, z_rk = np.loadtxt(filename_rk_[i] + h_name[i], usecols = (1, 2, 3), unpack = True)
-    x_fe, y_fe, z_fe =
+    x_rk, y_rk, z_rk = np.loadtxt(filename_rk[i] + h_name[i], usecols = (1, 2, 3), unpack = True)
+    x_fe, y_fe, z_fe = np.loadtxt(filename_fe[i] + h_name[i], usecols = (1, 2, 3), unpack = True)
 
 
     #Load x y z columns from output files

@@ -10,8 +10,8 @@ mpl.rcParams["ytick.labelsize"] = 12
 mpl.rcParams["legend.fontsize"] = 7.5
 plt.rcParams["figure.figsize"] = (7, 5)
 
-t = np.loadtxt("../out/r_values.txt", usecols=(0), delimiter='  ', dtype="double")
-r_z = np.loadtxt("../out/r_values.txt", usecols=(3), delimiter='  ', dtype="double")
+t = np.loadtxt("./out/r_1.txt", usecols=(0), delimiter='  ', dtype="double")
+r_z = np.loadtxt("./out/r_1.txt", usecols=(3), delimiter='  ', dtype="double")
 
 plt.plot(t, r_z)
 
