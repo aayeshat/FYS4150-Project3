@@ -11,7 +11,7 @@ int main()
 {
     int t0 = 0;
     double t = 100.;
-    double N = 20000.; //stepsize is 0.005
+    double N = 100000.; //stepsize is 0.001
     double dt = t / N;
 
     double B0 = 96.5;
@@ -31,11 +31,11 @@ int main()
         {
             r = vec(3).fill(0)*10e4;
 
-            r(2) = 100.;
-            r(0) = 100.;
+            r(2) = 10.;
+            r(0) = 10.;
 
             v = vec(3).fill(0);
-            v(1) = 100.;
+            v(1) = 10.;
         }
         else
         {
@@ -55,12 +55,12 @@ int main()
 
     if (trap.interaction)
     {
-        position_out_filename = "./out/r_1(0.005).txt";
+        position_out_filename = "./out/r_1(0.001).txt";
        // velocity_out_filename = "./out/v_xy_inter_1_2.txt";
     }
     else
     {
-        position_out_filename = "./out/r_1(0.005).txt";
+        position_out_filename = "./out/r_1(0.001).txt";
        // velocity_out_filename = "./out/v_1.txt";
     }
     position_out.open(position_out_filename);
