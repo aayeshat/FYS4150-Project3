@@ -9,11 +9,11 @@ using namespace std;
 
 int main()
 {
+    double f = 0.8;  // 0.1, 0.4, 0.8
     int t0 = 0;
     double t = 500.;
-    double N = 10000.;
+    double N = 500.;
     double dt = t / N;
-
     double B0 = 9.65e1;
     double V0 = 0.0025 * 9.64852558 * 1.0e7;
     double d = 500;
@@ -38,11 +38,11 @@ int main()
 
     if (trap.interaction)
     {
-        out_filename = "./out/10_inter__.txt";
+        out_filename = "./out/10_inter__" + to_string(f) + ".txt";
     }
     else
     {
-        out_filename = "./out/10_nointer__.txt";
+        out_filename = "./out/10_nointer__" + to_string(f) + ".txt";
     }
 
     ofstream out;
@@ -60,14 +60,13 @@ int main()
         for (int i = 0; i < number_of_particles; i++)
         {
             vec r = trap.particles[i].r;
-            cout << norm(r) << " < " << trap.d << endl;
-            cout << "-------------" << endl;
             if (norm(r) < trap.d)
             {
                 number_inside += 1;
             }
         }
 
+        double fraction = number_inside / number_of_particles;
         out << scientific << omega_v << "   " << fixed << number_inside << endl;
 
         for (int i = 0; i < number_of_particles; i++)

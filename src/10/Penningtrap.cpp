@@ -1,10 +1,8 @@
 #include "PenningTrap.hpp"
-
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <armadillo>
-
 using namespace arma;
 using namespace std;
 

@@ -1,3 +1,6 @@
+#ifndef __Particle_hpp__
+#define __Particle_hpp_
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -14,19 +17,7 @@ public:
     vec r; //position
     vec v; //velocity
 
-    Particle(double q_in, double m_in, vec r_in, vec v_in) //constructor
-    {
-        q = q_in;
-        m = m_in;
-        r = r_in;
-        v = v_in;
-    }
-
-    void print_particle() // funtion
-    {
-        cout << "charge = " << q << endl;
-        cout << "mass = " << m << endl;
-        r.print("position = ");
-        v.print("velocity = ");
-    }
+    Particle(double q_in, double m_in, vec r_in, vec v_in);
 };
+
+#endif
