@@ -11,9 +11,8 @@ int main()
 {
     int t0 = 0;
     double t = 500.;
-    double N = 10000.;
+    double N = 500.;
     double dt = t / N;
-
     double B0 = 9.65e1;
     double V0 = 0.0025 * 9.64852558 * 1.0e7;
     double d = 500;
@@ -21,7 +20,7 @@ int main()
 
     PenningTrap trap(B0, V0, d, number_of_particles);
 
-    trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
+    trap.interaction = false; //switch for interaction true (for interactions) or false (without coulombic interactions)
 
     arma_rng::set_seed_random();
 
