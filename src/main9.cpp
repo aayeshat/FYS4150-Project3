@@ -15,11 +15,11 @@ int main()
     double dt = t / N;
 
     double B0 = 96.5;
-    double V0 = 9.65; //v0/d^2
+    double V0 = 9.65e8; 
     double d = 10e4;
     int number_of_particles = 2;
 
-    PenningTrap trap(B0, V0, d, number_of_particles, -1);
+    PenningTrap trap(B0, V0, d, number_of_particles);
     
     trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
     
@@ -31,11 +31,11 @@ int main()
         {
             r = vec(3).fill(0)*10e4;
 
-            r(2) = 100.;
-            r(0) = 100.;
+            r(2) = 10.;
+            r(0) = 10.;
 
             v = vec(3).fill(0);
-            v(1) = 100.;
+            v(1) = 10.;
         }
         else
         {

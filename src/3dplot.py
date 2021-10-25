@@ -10,7 +10,7 @@ filename=""
 outfilename=""
 
 
-if interaction == True :
+if interaction == False :
   filename= "./out/r_xy_inter_1_2.txt" 
   outfilename="./out/3d_inter.pdf"
 else:

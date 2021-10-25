@@ -19,7 +19,7 @@ interaction = True # True or False
 filename=""
 outfilename=""
 
-if interaction == True :
+if interaction == False :
   filename= "./out/r_xy_inter_1_2.txt"
   outfilename="./out/plot_9b_inter.pdf"
 else:
