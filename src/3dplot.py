@@ -4,13 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 fig = plt.figure()
 ax = plt.axes(projection='3d')
-interaction = False # True or False
+interaction = True # True or False
 
 filename=""
 outfilename=""
 
 
-if interaction == False :
+if interaction == True :
   filename= "./out/r_xy_inter_1_2.txt" 
   outfilename="./out/3d_inter.pdf"
 else:
