@@ -15,7 +15,7 @@ mpl.rcParams["ytick.labelsize"] = 12
 mpl.rcParams["legend.fontsize"] = 7.5
 plt.rcParams["figure.figsize"] = (7, 5)
 
-interaction = True  # True or False
+interaction = False  # True or False
 
 phase = "z"
 
@@ -59,9 +59,10 @@ elif phase == "z":
     plt.plot(r_z_1, v_z_1, color="blue", label="particle 1")
     plt.plot(r_z_2, v_z_2, color="red", label="particle 2")
 
+plt.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1)
     # add axis labels and legend
-plt.xlabel("" + phase)
-plt.ylabel("v_" + phase)
+plt.xlabel("" + phase + " (μm) ")
+plt.ylabel("v_" + phase + " (μm/s) ")
 
 plt.legend()
 plt.grid(linestyle="--", linewidth=0.2)

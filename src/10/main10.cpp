@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-    double f = 0.8;  // 0.1, 0.4, 0.8
+    double f = 0.1;  // amplitude 0.1, 0.4, 0.7
     int t0 = 0;
     double t = 500.;
     double N = 500.;
@@ -21,7 +21,7 @@ int main()
 
     PenningTrap trap(B0, V0, d, number_of_particles);
 
-    trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
+    trap.interaction = false; //switch for interaction true (for interactions) or false (without coulombic interactions)
 
     arma_rng::set_seed_random();
 
@@ -56,7 +56,7 @@ int main()
             trap.evolve_RK4(dt, k + dt);
         }
 
-        int number_inside = 0;
+        double number_inside = 0;
         for (int i = 0; i < number_of_particles; i++)
         {
             vec r = trap.particles[i].r;
@@ -67,7 +67,7 @@ int main()
         }
 
         double fraction = number_inside / number_of_particles;
-        out << scientific << omega_v << "   " << fixed << number_inside << endl;
+        out << scientific << omega_v << "   " << fixed << fraction << endl;
 
         for (int i = 0; i < number_of_particles; i++)
         {
