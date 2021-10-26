@@ -8,5 +8,5 @@
 `g++ src/main9.cpp src/Particle.cpp src/Penningtrap.cpp -larmadillo && ./a.out`
 
 #### problem_10
-`g++ src/10/main10.cpp src/Particle.cpp src/10/Penningtrap.cpp -larmadillo && ./a.out`
-
+``
+g++ src/10/main10.cpp src/Particle.cpp src/10/Penningtrap.cpp -larmadillo && ./a.out
