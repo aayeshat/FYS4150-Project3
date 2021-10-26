@@ -28,9 +28,9 @@ A_neg = - (v_0 + w_pos * x_0) / (w_neg - w_pos) # A-
 #Analytical solutions
 
 
-filename_rk = ['../out/r_1(0.1).txt', '../out/r_1(0.05).txt', '../out/r_1(0.01).txt', '../out/r_1(0.005).txt', '../out/r_1(0.001).txt']
+filename_rk = ['./out/data/r_1(0.1).txt', './out/data/r_1(0.05).txt', './out/data/r_1(0.01).txt', './out/data/r_1(0.005).txt', './out/data/r_1(0.001).txt']
 h_name = ['0.1', '0.05', '0.01', '0.005','0.001']
-filename_fe = ['../out/r_1_euler(0.1).txt','../out/r_1_euler(0.05).txt','../out/r_1_euler(0.01).txt','../out/r_1_euler(0.005).txt','../out/r_1_euler(0.001).txt']
+filename_fe = ['./out/data/r_1_euler(0.1).txt','./out/data/r_1_euler(0.05).txt','./out/data/r_1_euler(0.01).txt','./out/data/r_1_euler(0.005).txt','./out/data/r_1_euler(0.001).txt']
 
 #Loop for plotting relative error for 5 different stepsizes h
 
@@ -72,7 +72,7 @@ for i in range(5):
 
     plt.plot(t, rel_err_fe, label = "h = " + h_name[i])
     plt.legend()
-    plt.savefig('../out/relerr_fe.pdf')
+    plt.savefig('./out/plot/relerr_fe.pdf')
 
 
 #Plot single numerical solution
@@ -84,7 +84,7 @@ for i in range(5):
 # plt.ylabel('x, y, z / $\mu$m')
 # plt.xlabel('time / $\mu$s')
 # plt.legend()
-# plt.savefig('../out/numerical_solutions.pdf')
+# plt.savefig('./out/plot/numerical_solutions.pdf')
 # plt.show()
 
 h = [0.1, 0.05, 0.01, 0.005, 0.001]
@@ -110,5 +110,5 @@ for k in range(1,5):
 # plt.ylabel('$r_{err}$')
 # plt.xticks([0,1,2,3,])
 # plt.legend()
-#plt.savefig('../out/error_conv.pdf')
+#plt.savefig('./out/plot/error_conv.pdf')
 # plt.show()
