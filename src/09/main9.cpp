@@ -17,11 +17,11 @@ int main()
     double B0 = 96.5;
     double V0 = 9.65e8; 
     double d = 10e4;
-    int number_of_particles = 1;
+    int number_of_particles = 2;
 
     PenningTrap trap(B0, V0, d, number_of_particles);
     
-    trap.interaction = false; //switch for interaction true (for interactions) or false (without coulombic interactions)
+    trap.interaction = true; //switch for interaction true (for interactions) or false (without coulombic interactions)
     
 
     for (int i = 0; i < number_of_particles; i++)
@@ -55,13 +55,13 @@ int main()
 
     if (trap.interaction)
     {
-        position_out_filename = "./out/r_1.txt";
-       // velocity_out_filename = "./out/v_xy_inter_1_2.txt";
+        position_out_filename = "./out/data/r_xy_inter_1_2.txt";
+        velocity_out_filename = "./out/data/v_xy_inter_1_2.txt";
     }
     else
     {
-        position_out_filename = "./out/r_1.txt";
-       // velocity_out_filename = "./out/v_1.txt";
+        position_out_filename = "./out/data/r_xy_nointer_1_2.txt";
+        velocity_out_filename = "./out/data/v_xy_nointer_1_2.txt";
     }
     position_out.open(position_out_filename);
     velocity_out.open(velocity_out_filename);

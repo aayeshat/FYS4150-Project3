@@ -1,7 +1,7 @@
 #ifndef __PenningTrap_hpp__
 #define __PenningTrap_hpp_
 
-#include "Particle.hpp"
+#include "../Particle.hpp"
 #include <armadillo>
 
 using namespace arma;

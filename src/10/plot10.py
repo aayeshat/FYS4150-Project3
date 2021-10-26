@@ -19,15 +19,15 @@ outfilename = ""
 
 
 if interaction == True:
-    filename1 = "./out/10_inter__0.100000.txt"
-    filename2 = "./out/10_inter__0.400000.txt"
-    filename3 = "./out/10_inter__0.700000.txt"
-    outfilename = "./out/plot_10_inter.pdf"
+    filename1 = "./out/data/10_inter__0.100000.txt"
+    filename2 = "./out/data/10_inter__0.400000.txt"
+    filename3 = "./out/data/10_inter__0.700000.txt"
+    outfilename = "./out/plot/plot_10_inter.pdf"
 else:
-    filename1 = "./out/10_nointer__0.100000.txt"
-    filename2 = "./out/10_nointer__0.400000.txt"
-    filename3 = "./out/10_nointer__0.700000.txt"
-    outfilename = "./out/plot_10_nointer.pdf"
+    filename1 = "./out/data/10_nointer__0.100000.txt"
+    filename2 = "./out/data/10_nointer__0.400000.txt"
+    filename3 = "./out/data/10_nointer__0.700000.txt"
+    outfilename = "./out/plot/plot_10_nointer.pdf"
 
 
 omega = np.loadtxt(filename1, usecols=(0), delimiter="  ", dtype="double")

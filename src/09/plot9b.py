@@ -20,11 +20,11 @@ filename=""
 outfilename=""
 
 if interaction == True :
-  filename= "./out/r_xy_inter_1_2.txt"
-  outfilename="./out/plot_9b_inter.pdf"
+  filename= "./out/data/r_xy_inter_1_2.txt"
+  outfilename="./out/plot/plot_9b_inter.pdf"
 else:
-  filename= "./out/r_xy_nointer_1_2.txt"
-  outfilename="./out/plot_9b_nointer.pdf"
+  filename= "./out/data/r_xy_nointer_1_2.txt"
+  outfilename="./out/plot/plot_9b_nointer.pdf"
 
 t = np.loadtxt(filename, usecols=0, dtype="double")
 

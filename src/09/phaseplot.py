@@ -24,13 +24,13 @@ filename2 = ""
 outfilename = ""
 
 if interaction == True:
-    filename = "./out/r_xy_inter_1_2.txt"
-    filename2 = "./out/v_xy_inter_1_2.txt"
-    outfilename = "./out/phase_" + phase + "_inter.pdf"
+    filename = "./out/data/r_xy_inter_1_2.txt"
+    filename2 = "./out/data/v_xy_inter_1_2.txt"
+    outfilename = "./out/plot/phase_" + phase + "_inter.pdf"
 else:
-    filename = "./out/r_xy_nointer_1_2.txt"
-    filename2 = "./out/v_xy_nointer_1_2.txt"
-    outfilename = "./out/phase_" + phase + "_nointer.pdf"
+    filename = "./out/data/r_xy_nointer_1_2.txt"
+    filename2 = "./out/data/v_xy_nointer_1_2.txt"
+    outfilename = "./out/plot/phase_" + phase + "_nointer.pdf"
 
 # with interaction
 # reading r values two particles

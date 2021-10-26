@@ -38,11 +38,11 @@ int main()
 
     if (trap.interaction)
     {
-        out_filename = "./out/10_inter__" + to_string(f) + ".txt";
+        out_filename = "./out/data/10_inter__" + to_string(f) + ".txt";
     }
     else
     {
-        out_filename = "./out/10_nointer__" + to_string(f) + ".txt";
+        out_filename = "./out/data/10_nointer__" + to_string(f) + ".txt";
     }
 
     ofstream out;
